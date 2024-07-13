@@ -1,0 +1,38 @@
+/* src/style/Login.css */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid;
+  margin: 5px;
+  padding-bottom: 10px;
+}
+
+.login-container input {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-container button {
+  padding: 5px 10px;
+  margin-top: 10px;
+}
+
+.leave-button,
+.create-room-button {
+  width: 80%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.leave-button:hover,
+.create-room-button:hover {
+  transform: scale(1.1); /* Zoom in on hover */
+}

@@ -1,0 +1,38 @@
+.chats-and-login-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chats-container {
+  flex: 1;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.login-container {
+  width: 300px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #ddd;
+}

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import CreateRoomModal from '../components/CreateRoomModal';
-import '../style/Chats.css';
-import '../style/Login.css';
+import { io } from 'socket.io-client';
+import CreateGroupChatModal from '../components/CreateGroupChatModal';
+import '../style/Home.css';
+
+const socket = io('http://localhost:5050');
 
 function Home() {
   const [chats, setChats] = useState([]);
+  const [users, setUsers] = useState([]);
   const [userName, setUserName] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,19 +25,41 @@ function Home() {
       }
     };
 
-    fetchChats();
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5050/users');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users', error);
+      }
+    };
 
-    // 채팅방 리스트 새로고침
-    const intervalId = setInterval(fetchChats, 5000);
+    fetchChats();
+    fetchUsers();
+
+    // 채팅방 리스트와 사용자 리스트 새로고침
+    const intervalId = setInterval(() => {
+      fetchChats();
+      fetchUsers();
+    }, 5000);
 
     const savedUserName = localStorage.getItem('userName');
     if (savedUserName) {
       setUserName(savedUserName);
       setIsLoggedIn(true);
+      socket.emit('register', savedUserName);
     }
 
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      socket.on('new1to1chat', (chat) => {
+        navigate(`/chats/${chat.number}`);
+      });
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleLogin = async () => {
     try {
@@ -42,6 +67,7 @@ function Home() {
       if (response.data) {
         localStorage.setItem('userName', userName);
         setIsLoggedIn(true);
+        socket.emit('register', userName);
       }
     } catch (error) {
       console.error('Login error', error);
@@ -69,6 +95,25 @@ function Home() {
     }
   };
 
+  const handleJoinUserChat = async (user) => {
+    if (isLoggedIn) {
+      try {
+        const response = await axios.post('http://localhost:5050/chats', {
+          chatName: `${user}님과의 1:1 채팅`,
+          isPersonal: true,
+          owner: userName,
+          user
+        });
+        const chat = response.data;
+        navigate(`/chats/${chat.number}`);
+      } catch (error) {
+        console.error('Error creating 1:1 chat', error);
+      }
+    } else {
+      alert('1:1 채팅 시작 전 로그인을 먼저 해주세요');
+    }
+  };
+
   const handleRoomCreated = (chat) => {
     navigate(`/chats/${chat.number}`);
   };
@@ -83,6 +128,7 @@ function Home() {
               <th>번호</th>
               <th>제목</th>
               <th>종류</th>
+              <th>방장</th>
               <th>생성일</th>
               <th>인원</th>
             </tr>
@@ -93,6 +139,7 @@ function Home() {
                 <td>{chat.number}</td>
                 <td>{chat.chatName}</td>
                 <td>{chat.isPersonal ? '1:1' : '그룹'}</td>
+                <td>{chat.owner.userName}</td> {/* Display owner’s username */}
                 <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
                 <td>{chat.users.length}</td>
               </tr>
@@ -124,8 +171,23 @@ function Home() {
             <button onClick={handleLogin}>로그인</button>
           </>
         )}
+        <div className="users-container">
+          <h2>접속 사용자</h2>
+          <ul>
+            {users
+              .filter((user) => user !== userName)
+              .map((user) => (
+                <li key={user}>
+                  <span>{user}</span>
+                  <button className="chat-button" onClick={() => handleJoinUserChat(user)}>
+                    1:1 채팅하기
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
-      {isModalOpen && <CreateRoomModal onClose={() => setIsModalOpen(false)} onRoomCreated={handleRoomCreated} />}
+      {isModalOpen && <CreateGroupChatModal onClose={() => setIsModalOpen(false)} onRoomCreated={handleRoomCreated} />}
     </div>
   );
 }

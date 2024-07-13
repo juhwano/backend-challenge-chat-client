@@ -1,0 +1,133 @@
+.chats-and-login-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chats-container {
+  flex: 1;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.login-container {
+  width: 300px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid;
+  margin: 5px;
+  padding-bottom: 10px;
+}
+
+.login-container input {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-container button {
+  padding: 5px 10px;
+  margin-top: 10px;
+}
+
+.leave-button,
+.create-room-button {
+  width: 80%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.exit-button {
+  width: 80%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.users-container {
+  border-top: solid;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.users-container h2 {
+  margin-bottom: 10px;
+}
+
+.users-container ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.users-container li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.users-container li:hover {
+  background-color: #e0e0e0;
+}
+
+.users-container li span {
+  flex: 1;
+  text-align: center;
+}
+
+.chat-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-button:hover {
+  background-color: #0056b3;
+}

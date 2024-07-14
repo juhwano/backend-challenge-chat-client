@@ -131,3 +131,61 @@ tr:hover {
 .chat-button:hover {
   background-color: #0056b3;
 }
+
+.search-results {
+  margin-top: 20px;
+}
+
+.search-results ul {
+  list-style: none;
+  padding: 0;
+}
+
+.search-results li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.status-circle.online {
+  background-color: green;
+}
+
+.status-circle.away {
+  background-color: red;
+}
+
+.status-circle.offline {
+  background-color: grey;
+}
+
+.status-circle.read {
+  background-color: lightgreen;
+}
+
+.chat-button {
+  margin-left: 20px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chat-button:hover {
+  background-color: #0056b3;
+}

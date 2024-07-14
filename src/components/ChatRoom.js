@@ -14,11 +14,12 @@ function ChatRoom() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef(null);
+  const [hasLeft, setHasLeft] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
       const chatResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/${number}`);
-      console.log('chatResponse: ', chatResponse);
+      console.log('chatResponse: ', chatResponse.data);
       const messageResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/messages/${chatResponse.data._id}`);
       setMessages(messageResponse.data);
     };
@@ -34,19 +35,28 @@ function ChatRoom() {
     });
 
     const handleBeforeUnload = () => {
-      socket.emit('leaveRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
+      if (!hasLeft) {
+        socket.emit('leaveRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
+        setHasLeft(true);
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      socket.emit('leaveRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
       socket.off();
     };
-  }, [number, chatId, location.state.chatId]);
+  }, [number, chatId, location.state.chatId, hasLeft]);
 
   const handleSendMessage = () => {
+    const trimmedMessage = inputMessage.trim();
+
+    if (!trimmedMessage) {
+      alert('메시지 내용을 입력해주세요.');
+      return;
+    }
+
     const userName = localStorage.getItem('userName');
     const userId = localStorage.getItem('userId');
     const message = { chatId, chatNumber: number, from: userId, fromUserName: userName, content: inputMessage };
@@ -58,6 +68,7 @@ function ChatRoom() {
     const userName = localStorage.getItem('userName');
     const userId = localStorage.getItem('userId');
     socket.emit('leaveRoom', { chatId, number, userId, userName });
+    setHasLeft(true);
     navigate('/');
   };
 

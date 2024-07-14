@@ -1,35 +1,49 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateGroupChatModal from '../components/CreateGroupChatModal';
 import '../style/Home.css';
 
 function Home() {
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [chats, setChats] = useState([]);
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchChats = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats`);
-      setChats(response.data);
-    };
+    const storedUserName = localStorage.getItem('userName');
+    const storedUserId = localStorage.getItem('userId');
 
-    const fetchUsers = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users`);
-      setUsers(response.data);
-    };
+    if (storedUserName || storedUserId) {
+      setUserName(storedUserName);
+      setUserId(storedUserId);
+      setIsLoggedIn(true);
+    }
 
     fetchChats();
     fetchUsers();
   }, []);
 
+  const fetchChats = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats`);
+    setChats(response.data);
+  };
+
+  const fetchUsers = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users`);
+    setUsers(response.data);
+  };
+
   const handleLogin = async () => {
     try {
       const user = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, { userName });
       localStorage.setItem('userName', user.data.userName);
+      setUserId(user.data.userId);
       localStorage.setItem('userId', user.data._id);
+      setUserName(user.data.userName);
       setIsLoggedIn(true);
     } catch (error) {
       console.error('Login error:', error);
@@ -48,20 +62,23 @@ function Home() {
     }
   };
 
-  const handleJoinChat = (chatNumber) => {
-    sessionStorage.setItem('currentChatNumber', chatNumber);
-    window.location.href = `/chats/${chatNumber}`;
+  const handleJoinChat = (chatId, chatNumber) => {
+    console.log('chatId, chatNumber: ', chatId, chatNumber);
+    localStorage.setItem('currentChatId', chatId);
+    localStorage.setItem('currentChatNumber', chatNumber);
+    navigate(`/chats/${chatNumber}`, { state: { chatId, chatNumber } });
   };
 
   const handleJoinUserChat = async (user) => {
     try {
-      const owner = localStorage.getItem('userName');
+      const owner = localStorage.getItem('userId');
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/chats`, {
+        chatName: `1:1 with ${user.userName}`,
         isPersonal: true,
         owner,
         users: [user._id]
       });
-      handleJoinChat(response.data.number);
+      handleJoinChat(response.data._id, response.data.number);
     } catch (error) {
       console.error('Error starting 1:1 chat:', error);
     }
@@ -87,7 +104,7 @@ function Home() {
           </thead>
           <tbody>
             {chats.map((chat) => (
-              <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+              <tr key={chat._id} onClick={() => handleJoinChat(chat._id, chat.number)} style={{ cursor: 'pointer' }}>
                 <td>{chat.number}</td>
                 <td>{chat.chatName}</td>
                 <td>{chat.isPersonal ? '1:1' : 'Group'}</td>
@@ -137,7 +154,7 @@ function Home() {
           </ul>
         </div>
       </div>
-      {isModalOpen && <CreateGroupChatModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <CreateGroupChatModal onClose={() => setIsModalOpen(false)} onRoomCreated={fetchChats} />}
     </div>
   );
 }

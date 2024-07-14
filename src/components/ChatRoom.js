@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from 'axios';
 import '../style/ChatRoom.css';
@@ -8,35 +8,43 @@ const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 function ChatRoom() {
   const { number } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { chatId, chatNumber } = location.state || {};
   const [messages, setMessages] = useState([]);
-  const [chatId, setChatId] = useState('');
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const messageResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/${number}/messages`); // Previous message history
-      const chatResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/${number}`); // Room info
+      const chatResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/${number}`);
       console.log('chatResponse: ', chatResponse);
+      const messageResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/messages/${chatResponse.data._id}`);
       setMessages(messageResponse.data);
-      setChatId(chatResponse.data.id);
-      console.log('chatResponse.data.id: ', chatResponse.data.id);
     };
 
     fetchMessages();
 
     const userName = localStorage.getItem('userName');
-    socket.emit('joinRoom', { number, userName, chatId });
+    const userId = localStorage.getItem('userId');
+    socket.emit('joinRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
 
     socket.on('message', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
+    const handleBeforeUnload = () => {
+      socket.emit('leaveRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
-      socket.emit('leaveRoom', { number, userName });
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      socket.emit('leaveRoom', { chatId: chatId || location.state.chatId, number, userId, userName });
       socket.off();
     };
-  }, [number]);
+  }, [number, chatId, location.state.chatId]);
 
   const handleSendMessage = () => {
     const userName = localStorage.getItem('userName');
@@ -44,6 +52,13 @@ function ChatRoom() {
     const message = { chatId, chatNumber: number, from: userId, fromUserName: userName, content: inputMessage };
     socket.emit('sendMessage', message);
     setInputMessage('');
+  };
+
+  const handleLeaveRoom = () => {
+    const userName = localStorage.getItem('userName');
+    const userId = localStorage.getItem('userId');
+    socket.emit('leaveRoom', { chatId, number, userId, userName });
+    navigate('/');
   };
 
   useEffect(() => {
@@ -88,6 +103,9 @@ function ChatRoom() {
           placeholder="Type your message..."
         />
         <button onClick={handleSendMessage}>Send</button>
+        <button className="leave-room-button" onClick={handleLeaveRoom}>
+          Leave Room
+        </button>
       </section>
     </div>
   );

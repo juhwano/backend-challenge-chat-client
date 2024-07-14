@@ -1,97 +1,90 @@
-/* src/style/ChatRoom.css */
 .chat-room {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  max-width: 800px;
+  width: 100%;
 }
 
-.chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #f2f2f2;
-  border-bottom: 1px solid #ddd;
-}
-
-.leave-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.exit-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.chat-container {
-  display: flex;
+.messages {
   flex: 1;
-  overflow: hidden;
-}
-
-.chat-messages {
-  flex: 3;
   padding: 10px;
   overflow-y: auto;
-  background-color: #ffffff;
-}
-
-.chat-sidebar {
-  flex: 1;
-  padding: 10px;
-  background-color: #f7f7f7;
-  overflow-y: auto;
-}
-
-.chat-input {
+  background-color: #f1f1f1;
   display: flex;
-  padding: 10px;
-  background-color: #f2f2f2;
-  border-top: 1px solid #ddd;
+  flex-direction: column;
 }
 
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.chat-input button {
-  margin-left: 10px;
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.chat-message {
+.message {
   margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 5px;
+  border-radius: 5px;
+  max-width: 80%;
 }
 
-.my-message {
-  background-color: #dcf8c6;
+.user-message {
+  background-color: #e0f7fa;
+  align-self: flex-end;
   text-align: right;
 }
 
+.system-message {
+  background-color: #ffe0b2;
+  font-style: italic;
+  align-self: center;
+}
+
 .other-message {
-  background-color: #e6e6e6;
+  background-color: #fff;
+  align-self: flex-start;
   text-align: left;
 }
 
-.system-message {
-  background-color: #ffcccc;
-  text-align: center;
-  color: red;
+.input-area {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.input-area button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-area button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+  .message {
+    max-width: 100%;
+  }
+
+  .input-area {
+    flex-direction: column;
+  }
+
+  .input-area input {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .input-area button {
+    width: 100%;
+  }
 }

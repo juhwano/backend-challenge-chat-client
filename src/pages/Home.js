@@ -148,7 +148,7 @@ function Home() {
             <tr>
               <th>번호</th>
               <th>제목</th>
-              <th>생성자</th>
+              <th>방장</th>
               <th>생성일</th>
             </tr>
           </thead>
@@ -171,7 +171,7 @@ function Home() {
             <tr>
               <th>번호</th>
               <th>제목</th>
-              <th>생성자</th>
+              <th>방장</th>
               <th>생성일</th>
               <th>인원</th>
             </tr>
@@ -190,7 +190,7 @@ function Home() {
         </table>
       </div>
       <div className="login-container">
-        <h2>로그인</h2>
+        <h2>닉네임 설정</h2>
         {isLoggedIn ? (
           <>
             <span>환영합니다</span>

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../style/CreateGroupChatModal.css';
 
 function CreateGroupChatModal({ onClose, onRoomCreated }) {
   const [chatName, setChatName] = useState('');
+  const navigate = useNavigate();
 
   const handleCreateRoom = async () => {
     try {
@@ -11,11 +13,15 @@ function CreateGroupChatModal({ onClose, onRoomCreated }) {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/chats`, {
         chatName,
         isPersonal: false,
-        owner
+        owner,
+        users: [owner]
       });
       if (response.data) {
         onClose();
         onRoomCreated();
+        navigate(`/chats/${response.data.number}`, {
+          state: { chatId: response.data._id, chatNumber: response.data.number }
+        });
       }
     } catch (error) {
       console.error('Error creating room:', error);
@@ -32,8 +38,12 @@ function CreateGroupChatModal({ onClose, onRoomCreated }) {
           onChange={(e) => setChatName(e.target.value)}
           placeholder="Enter chat room name"
         />
-        <button onClick={handleCreateRoom}>Create</button>
-        <button onClick={onClose}>Close</button>
+        <button className="create-button" onClick={handleCreateRoom}>
+          Create
+        </button>
+        <button className="cancel-button" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );

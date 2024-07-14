@@ -44,6 +44,7 @@
 
 .input-area {
   display: flex;
+  align-items: center;
   padding: 10px;
   background-color: #fff;
   box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
@@ -55,6 +56,12 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-right: 10px;
+}
+
+.input-area .char-count {
+  margin-right: 10px;
+  font-size: 14px;
+  color: #999;
 }
 
 .input-area button {

@@ -27,7 +27,6 @@ function ChatRoom() {
       setChatResponse(chatResponse.data);
       setMessages(messageResponse.data);
 
-      // Extract other user's information if it's a 1:1 chat
       if (chatResponse.data.isPersonal) {
         const otherUserId = chatResponse.data.users.find((user) => user !== userId);
         if (otherUserId) {
@@ -60,6 +59,11 @@ function ChatRoom() {
   }, [number, chatId, location.state.chatId, hasLeft, userId]);
 
   const handleSendMessage = () => {
+    if (inputMessage.length > 1000) {
+      alert('메시지는 최대 1000자까지 가능합니다.');
+      return;
+    }
+
     const trimmedMessage = inputMessage.trim();
 
     if (!trimmedMessage) {
@@ -72,7 +76,7 @@ function ChatRoom() {
       chatNumber: number,
       from: userId,
       fromUserName: userName,
-      content: inputMessage,
+      content: trimmedMessage,
       ...(otherUserId && { to: otherUserId })
     };
 
@@ -84,6 +88,15 @@ function ChatRoom() {
     socket.emit('leaveRoom', { chatId, number, userId, userName });
     setHasLeft(true);
     navigate('/');
+  };
+
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    if (value.length === 1000) {
+      setInputMessage(value);
+    } else {
+      setInputMessage(value.substring(0, 999));
+    }
   };
 
   useEffect(() => {
@@ -122,10 +135,12 @@ function ChatRoom() {
         <input
           type="text"
           value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          onChange={handleInputChange}
           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           placeholder="Type your message"
+          maxLength={1000}
         />
+        <div className="char-count">{inputMessage.length} / 1000</div>
         <button onClick={handleSendMessage}>전송</button>
         <button className="leave-room-button" onClick={handleLeaveRoom}>
           나가기

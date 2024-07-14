@@ -13,6 +13,10 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [oneToOnePage, setOneToOnePage] = useState(1);
+  const [groupPage, setGroupPage] = useState(1);
+  const [totalGroupPages, setTotalGroupPages] = useState(1);
+  const [totalOneToOnePages, setTotalOneToOnePages] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,25 +29,41 @@ function Home() {
       setIsLoggedIn(true);
       fetchChats(storedUserId);
     } else {
-      fetchChats();
+      fetchGroupChats();
     }
 
     const interval = setInterval(() => {
       const id = storedUserId || localStorage.getItem('userId');
-      fetchChats(id);
+      if (id) {
+        fetchChats(id);
+      } else {
+        fetchGroupChats();
+      }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [oneToOnePage, groupPage]);
+
+  const fetchGroupChats = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats`, { params: { page: groupPage } });
+      setGroupChats(response.data.chats);
+      setTotalGroupPages(response.data.totalPages);
+    } catch (error) {
+      console.error('Error fetching group chats:', error);
+    }
+  };
 
   const fetchChats = async (userId) => {
     try {
-      const groupResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats`);
-      setGroupChats(groupResponse.data);
+      await fetchGroupChats();
 
       if (userId) {
-        const oneToOneResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/one-to-one/${userId}`);
-        setOneToOneChats(oneToOneResponse.data);
+        const oneToOneResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chats/one-to-one/${userId}`, {
+          params: { page: oneToOnePage }
+        });
+        setOneToOneChats(oneToOneResponse.data.chats);
+        setTotalOneToOnePages(oneToOneResponse.data.totalPages);
       } else {
         setOneToOneChats([]);
       }
@@ -60,7 +80,7 @@ function Home() {
       localStorage.setItem('userId', user.data._id);
       setUserName(user.data.userName);
       setIsLoggedIn(true);
-      fetchChats(user.data._id);
+      fetchChats(user.data.userId);
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -76,6 +96,7 @@ function Home() {
       setUserName('');
       setUserId('');
       setOneToOneChats([]);
+      fetchGroupChats();
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -141,6 +162,18 @@ function Home() {
     }
   };
 
+  const handleOneToOnePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalOneToOnePages) {
+      setOneToOnePage(newPage);
+    }
+  };
+
+  const handleGroupPageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalGroupPages) {
+      setGroupPage(newPage);
+    }
+  };
+
   return (
     <div className="home">
       <div className="sidebar">
@@ -182,7 +215,7 @@ function Home() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="검색할 유저의 닉네임을 입력해주세요."
-            disabled={!isLoggedIn} // Disable if not logged in
+            disabled={!isLoggedIn}
           />
           <button className="search-button" onClick={handleSearch} disabled={!isLoggedIn}>
             검색
@@ -210,31 +243,43 @@ function Home() {
         )}
       </div>
       <div className="chat-lists">
-        {isLoggedIn && (
-          <div className="chat-list">
-            <h1>1:1 채팅 목록</h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>번호</th>
-                  <th>제목</th>
-                  <th>방장</th>
-                  <th>생성일</th>
+        <div className="chat-list">
+          <h1>1:1 채팅 목록</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>방장</th>
+                <th>생성일</th>
+              </tr>
+            </thead>
+            <tbody>
+              {oneToOneChats.map((chat) => (
+                <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+                  <td>{chat.number}</td>
+                  <td>{chat.chatName}</td>
+                  <td>{chat.owner.userName}</td>
+                  <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {oneToOneChats.map((chat) => (
-                  <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
-                    <td>{chat.number}</td>
-                    <td>{chat.chatName}</td>
-                    <td>{chat.owner.userName}</td>
-                    <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination">
+            <button onClick={() => handleOneToOnePageChange(oneToOnePage - 1)} disabled={oneToOnePage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {oneToOnePage} of {totalOneToOnePages}
+            </span>
+            <button
+              onClick={() => handleOneToOnePageChange(oneToOnePage + 1)}
+              disabled={oneToOnePage === totalOneToOnePages}
+            >
+              Next
+            </button>
           </div>
-        )}
+        </div>
         <div className="chat-list">
           <h1>그룹 채팅 목록</h1>
           <table>
@@ -259,6 +304,17 @@ function Home() {
               ))}
             </tbody>
           </table>
+          <div className="pagination">
+            <button onClick={() => handleGroupPageChange(groupPage - 1)} disabled={groupPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {groupPage} of {totalGroupPages}
+            </span>
+            <button onClick={() => handleGroupPageChange(groupPage + 1)} disabled={groupPage === totalGroupPages}>
+              Next
+            </button>
+          </div>
         </div>
       </div>
       {isModalOpen && (

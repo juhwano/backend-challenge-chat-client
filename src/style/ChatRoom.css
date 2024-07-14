@@ -59,15 +59,19 @@
 
 .input-area button {
   padding: 10px 20px;
-  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.input-area button:hover {
-  background-color: #0056b3;
+.leave-room-button {
+  background-color: #ff0000;
+  margin-left: 10px; /* Optional: Adds spacing between the buttons */
+}
+
+.leave-room-button:hover {
+  background-color: #cc0000;
 }
 
 @media (max-width: 600px) {

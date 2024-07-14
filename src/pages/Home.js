@@ -25,7 +25,7 @@ function Home() {
       setIsLoggedIn(true);
       fetchChats(storedUserId);
     } else {
-      fetchChats(); // Fetch only group chats if not logged in
+      fetchChats();
     }
 
     const interval = setInterval(() => {
@@ -73,6 +73,8 @@ function Home() {
       localStorage.removeItem('userName');
       localStorage.removeItem('userId');
       setIsLoggedIn(false);
+      setUserName('');
+      setUserId('');
       setOneToOneChats([]);
     } catch (error) {
       console.error('Logout error:', error);
@@ -208,29 +210,31 @@ function Home() {
         )}
       </div>
       <div className="chat-lists">
-        <div className="chat-list">
-          <h1>1:1 채팅 목록</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>방장</th>
-                <th>생성일</th>
-              </tr>
-            </thead>
-            <tbody>
-              {oneToOneChats.map((chat) => (
-                <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
-                  <td>{chat.number}</td>
-                  <td>{chat.chatName}</td>
-                  <td>{chat.owner.userName}</td>
-                  <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+        {isLoggedIn && (
+          <div className="chat-list">
+            <h1>1:1 채팅 목록</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>제목</th>
+                  <th>방장</th>
+                  <th>생성일</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {oneToOneChats.map((chat) => (
+                  <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+                    <td>{chat.number}</td>
+                    <td>{chat.chatName}</td>
+                    <td>{chat.owner.userName}</td>
+                    <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         <div className="chat-list">
           <h1>그룹 채팅 목록</h1>
           <table>

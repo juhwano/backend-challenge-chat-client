@@ -67,7 +67,7 @@
 
 .leave-room-button {
   background-color: #ff0000;
-  margin-left: 10px; /* Optional: Adds spacing between the buttons */
+  margin-left: 10px;
 }
 
 .leave-room-button:hover {

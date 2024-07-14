@@ -31,18 +31,18 @@ function CreateGroupChatModal({ onClose, onRoomCreated }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>Create Chat Room</h2>
+        <h2>그룹 채팅방 생성</h2>
         <input
           type="text"
           value={chatName}
           onChange={(e) => setChatName(e.target.value)}
-          placeholder="Enter chat room name"
+          placeholder="생성할 채팅방 이름을 입력해주세요."
         />
         <button className="create-button" onClick={handleCreateRoom}>
-          Create
+          확인
         </button>
         <button className="cancel-button" onClick={onClose}>
-          Close
+          취소
         </button>
       </div>
     </div>

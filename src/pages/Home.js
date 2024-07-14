@@ -27,8 +27,9 @@ function Home() {
 
   const handleLogin = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, { userName });
-      localStorage.setItem('userName', userName);
+      const user = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, { userName });
+      localStorage.setItem('userName', user.data.userName);
+      localStorage.setItem('userId', user.data._id);
       setIsLoggedIn(true);
     } catch (error) {
       console.error('Login error:', error);
@@ -40,6 +41,7 @@ function Home() {
       const userName = localStorage.getItem('userName');
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, { userName });
       localStorage.removeItem('userName');
+      localStorage.removeItem('userId');
       setIsLoggedIn(false);
     } catch (error) {
       console.error('Logout error:', error);
@@ -103,7 +105,7 @@ function Home() {
           <>
             <span>Welcome</span>
             <p>{userName}!</p>
-            <button className="leave-button" onClick={handleLogout}>
+            <button className="exit-button" onClick={handleLogout}>
               Logout
             </button>
             <button className="create-room-button" onClick={() => setIsModalOpen(true)}>

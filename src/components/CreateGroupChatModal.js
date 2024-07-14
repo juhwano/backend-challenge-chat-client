@@ -9,15 +9,17 @@ function CreateGroupChatModal({ onClose }) {
 
   const handleCreateRoom = async () => {
     try {
-      const owner = localStorage.getItem('userName');
+      const owner = localStorage.getItem('userId');
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/chats`, {
         chatName,
         isPersonal: false,
-        owner
+        owner,
+        users: [owner]
       });
       if (response.data) {
         onClose();
-        sessionStorage.setItem('currentChatNumber', response.data.number);
+        localStorage.setItem('chatId', response.data.id);
+        localStorage.setItem('chatNumber', response.data.number);
         navigate(`/chats/${response.data.number}`);
       }
     } catch (error) {

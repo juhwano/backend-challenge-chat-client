@@ -10,7 +10,11 @@ function CreateGroupChatModal({ onClose }) {
   const handleCreateRoom = async () => {
     try {
       const owner = localStorage.getItem('userName');
-      const response = await axios.post('http://localhost:5050/chats', { chatName, isPersonal: false, owner });
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/chats`, {
+        chatName,
+        isPersonal: false,
+        owner
+      });
       if (response.data) {
         onClose();
         sessionStorage.setItem('currentChatNumber', response.data.number);
@@ -24,14 +28,10 @@ function CreateGroupChatModal({ onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>채팅방 생성</h2>
-        <input type="text" value={chatName} onChange={(e) => setChatName(e.target.value)} placeholder="제목" />
-        <button className="create-button" onClick={handleCreateRoom}>
-          확인
-        </button>
-        <button className="cancel-button" onClick={onClose}>
-          취소
-        </button>
+        <h2>Create Chat Room</h2>
+        <input type="text" value={chatName} onChange={(e) => setChatName(e.target.value)} />
+        <button onClick={handleCreateRoom}>Create</button>
+        <button onClick={onClose}>Close</button>
       </div>
     </div>
   );

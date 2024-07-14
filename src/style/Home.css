@@ -1,16 +1,81 @@
-.chats-and-login-container {
+.home {
   display: flex;
-  justify-content: space-between;
 }
 
-.chats-container {
+.sidebar {
+  width: 300px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-right: 1px solid #ddd;
+}
+
+.chat-lists {
   flex: 1;
-  margin-right: 20px;
-  margin-left: 20px;
+  padding: 20px;
 }
 
 .login-container {
-  width: 300px;
+  margin-bottom: 20px;
+}
+
+.nickname-input,
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.login-button,
+.search-button,
+.exit-button,
+.create-room-button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: none;
+  cursor: pointer;
+}
+
+.login-button {
+  background: #007bff;
+  color: #fff;
+}
+
+.search-button {
+  background: #007bff;
+  color: #fff;
+}
+
+.exit-button {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+.create-room-button {
+  background: #28a745;
+  color: #fff;
+}
+
+.login-button:disabled,
+.search-button:disabled,
+.exit-button:disabled,
+.create-room-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.chat-list {
+  margin-bottom: 20px;
+}
+
+.chat-list h1 {
+  margin-bottom: 10px;
 }
 
 table {
@@ -20,120 +85,25 @@ table {
 
 th,
 td {
+  padding: 10px;
   border: 1px solid #ddd;
-  padding: 8px;
+  text-align: left;
 }
 
-th {
-  background-color: #f2f2f2;
-  text-align: center;
+.status-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
 }
 
-tr:nth-child(even) {
-  background-color: #f9f9f9;
+.online {
+  background: green;
 }
 
-tr:hover {
-  background-color: #ddd;
-}
-
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: solid;
-  margin: 5px;
-  padding-bottom: 10px;
-}
-
-.login-container input {
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.login-container button {
-  padding: 5px 10px;
-  margin-top: 10px;
-}
-
-.leave-button,
-.create-room-button {
-  width: 80%;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.exit-button {
-  width: 80%;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.users-container {
-  border-top: solid;
-  margin-top: 20px;
-  width: 100%;
-}
-
-.users-container h2 {
-  margin-bottom: 10px;
-}
-
-.users-container ul {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-}
-
-.users-container li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 5px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.users-container li:hover {
-  background-color: #e0e0e0;
-}
-
-.users-container li span {
-  flex: 1;
-  text-align: center;
-}
-
-.chat-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.chat-button:hover {
-  background-color: #0056b3;
-}
-
-.search-results {
-  margin-top: 20px;
+.offline {
+  background: red;
 }
 
 .search-results ul {
@@ -145,7 +115,8 @@ tr:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .user-status {
@@ -153,39 +124,15 @@ tr:hover {
   align-items: center;
 }
 
-.status-circle {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.status-circle.online {
-  background-color: green;
-}
-
-.status-circle.away {
-  background-color: red;
-}
-
-.status-circle.offline {
-  background-color: grey;
-}
-
-.status-circle.read {
-  background-color: lightgreen;
-}
-
 .chat-button {
-  margin-left: 20px;
-  padding: 5px 10px;
-  background-color: #007bff;
+  background: #007bff;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
 }
 
-.chat-button:hover {
-  background-color: #0056b3;
+.chat-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }

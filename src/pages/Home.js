@@ -25,7 +25,7 @@ function Home() {
       setIsLoggedIn(true);
       fetchChats(storedUserId);
     } else {
-      fetchChats();
+      fetchChats(); // Fetch only group chats if not logged in
     }
 
     const interval = setInterval(() => {
@@ -141,90 +141,48 @@ function Home() {
 
   return (
     <div className="home">
-      <div className="chat-list">
-        <h1>1:1 채팅 목록</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>번호</th>
-              <th>제목</th>
-              <th>방장</th>
-              <th>생성일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {oneToOneChats.map((chat) => (
-              <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
-                <td>{chat.number}</td>
-                <td>{chat.chatName}</td>
-                <td>{chat.owner.userName}</td>
-                <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="chat-list">
-        <h1>그룹 채팅 목록</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>번호</th>
-              <th>제목</th>
-              <th>방장</th>
-              <th>생성일</th>
-              <th>인원</th>
-            </tr>
-          </thead>
-          <tbody>
-            {groupChats.map((chat) => (
-              <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
-                <td>{chat.number}</td>
-                <td>{chat.chatName}</td>
-                <td>{chat.owner.userName}</td>
-                <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
-                <td>{chat.users.length}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="login-container">
-        <h2>닉네임 설정</h2>
-        {isLoggedIn ? (
-          <>
-            <span>환영합니다</span>
-            <p>
-              <strong>{userName}</strong>
-            </p>
-            <button className="exit-button" onClick={handleLogout}>
-              로그아웃
-            </button>
-            <button className="create-room-button" onClick={() => setIsModalOpen(true)}>
-              그룹 채팅방 생성
-            </button>
-          </>
-        ) : (
-          <>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="채팅에 사용할 닉네임을 입력해주세요."
-            />
-            <button onClick={handleLogin}>로그인</button>
-          </>
-        )}
+      <div className="sidebar">
+        <div className="login-container">
+          <h2>닉네임 설정</h2>
+          {isLoggedIn ? (
+            <>
+              <span>환영합니다</span>
+              <p>
+                <strong>{userName}</strong>
+              </p>
+              <button className="exit-button" onClick={handleLogout}>
+                로그아웃
+              </button>
+              <button className="create-room-button" onClick={() => setIsModalOpen(true)}>
+                그룹 채팅방 생성
+              </button>
+            </>
+          ) : (
+            <>
+              <input
+                type="text"
+                className="nickname-input"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="채팅에 사용할 닉네임을 입력해주세요."
+              />
+              <button className="login-button" onClick={handleLogin}>
+                로그인
+              </button>
+            </>
+          )}
+        </div>
         <div className="search-container">
           <h2>사용자 검색</h2>
           <input
             type="text"
+            className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="검색할 유저의 닉네임을 입력해주세요."
             disabled={!isLoggedIn} // Disable if not logged in
           />
-          <button onClick={handleSearch} disabled={!isLoggedIn}>
+          <button className="search-button" onClick={handleSearch} disabled={!isLoggedIn}>
             검색
           </button>
         </div>
@@ -248,6 +206,56 @@ function Home() {
             </ul>
           </div>
         )}
+      </div>
+      <div className="chat-lists">
+        <div className="chat-list">
+          <h1>1:1 채팅 목록</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>방장</th>
+                <th>생성일</th>
+              </tr>
+            </thead>
+            <tbody>
+              {oneToOneChats.map((chat) => (
+                <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+                  <td>{chat.number}</td>
+                  <td>{chat.chatName}</td>
+                  <td>{chat.owner.userName}</td>
+                  <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="chat-list">
+          <h1>그룹 채팅 목록</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>방장</th>
+                <th>생성일</th>
+                <th>인원</th>
+              </tr>
+            </thead>
+            <tbody>
+              {groupChats.map((chat) => (
+                <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+                  <td>{chat.number}</td>
+                  <td>{chat.chatName}</td>
+                  <td>{chat.owner.userName}</td>
+                  <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+                  <td>{chat.users.length}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {isModalOpen && (
         <CreateGroupChatModal onClose={() => setIsModalOpen(false)} onRoomCreated={() => fetchChats(userId)} />

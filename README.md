@@ -14,10 +14,10 @@ chat-client/
 │   │   ├── ChatRoom.css
 │   │   ├── CreateGroupChatModal.css
 │   │   └── Home.css
-│  ├── App.js
-│  ├── App.css
-│  └── index.js
-│  └── index.css
+│   ├── App.js
+│   ├── App.css
+│   └── index.js
+│   └── index.css
 ├── Dockerfile
 ├── package.json
 └── .env

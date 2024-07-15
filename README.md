@@ -9,16 +9,14 @@ chat-client/
 │   │   └── ProtectedRoute.js
 │   ├── pages/
 │   │   └── Home.js
-│  ├── style/
+│   ├── style/
 │   │   ├── App.css
 │   │   ├── ChatRoom.css
 │   │   ├── CreateGroupChatModal.css
 │   │   └── Home.css
 │  ├── App.js
-
 │  ├── App.css
 │  └── index.js
-
 │  └── index.css
 ├── Dockerfile
 ├── package.json

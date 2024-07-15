@@ -74,7 +74,7 @@ function Home() {
 
   const handleLogin = async () => {
     try {
-      const user = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, { userName });
+      const user = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/login`, { userName });
       localStorage.setItem('userName', user.data.userName);
       setUserId(user.data.userId);
       localStorage.setItem('userId', user.data._id);
@@ -89,7 +89,7 @@ function Home() {
   const handleLogout = async () => {
     try {
       const userName = localStorage.getItem('userName');
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, { userName });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/logout`, { userName });
       localStorage.removeItem('userName');
       localStorage.removeItem('userId');
       setIsLoggedIn(false);
@@ -243,43 +243,45 @@ function Home() {
         )}
       </div>
       <div className="chat-lists">
-        <div className="chat-list">
-          <h1>1:1 채팅 목록</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>방장</th>
-                <th>생성일</th>
-              </tr>
-            </thead>
-            <tbody>
-              {oneToOneChats.map((chat) => (
-                <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
-                  <td>{chat.number}</td>
-                  <td>{chat.chatName}</td>
-                  <td>{chat.owner.userName}</td>
-                  <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+        {isLoggedIn && (
+          <div className="chat-list">
+            <h1>1:1 채팅 목록</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>제목</th>
+                  <th>방장</th>
+                  <th>생성일</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="pagination">
-            <button onClick={() => handleOneToOnePageChange(oneToOnePage - 1)} disabled={oneToOnePage === 1}>
-              Previous
-            </button>
-            <span>
-              Page {oneToOnePage} of {totalOneToOnePages}
-            </span>
-            <button
-              onClick={() => handleOneToOnePageChange(oneToOnePage + 1)}
-              disabled={oneToOnePage === totalOneToOnePages}
-            >
-              Next
-            </button>
+              </thead>
+              <tbody>
+                {oneToOneChats.map((chat) => (
+                  <tr key={chat._id} onClick={() => handleJoinChat(chat.number)} style={{ cursor: 'pointer' }}>
+                    <td>{chat.number}</td>
+                    <td>{chat.chatName}</td>
+                    <td>{chat.owner.userName}</td>
+                    <td>{new Date(chat.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <button onClick={() => handleOneToOnePageChange(oneToOnePage - 1)} disabled={oneToOnePage === 1}>
+                Previous
+              </button>
+              <span>
+                Page {oneToOnePage} of {totalOneToOnePages}
+              </span>
+              <button
+                onClick={() => handleOneToOnePageChange(oneToOnePage + 1)}
+                disabled={oneToOnePage === totalOneToOnePages}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        )}
         <div className="chat-list">
           <h1>그룹 채팅 목록</h1>
           <table>

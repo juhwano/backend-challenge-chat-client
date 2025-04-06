@@ -23,7 +23,7 @@
   - Socket.IO Client (v4.7.5)
   - Axios (v1.7.2)
 
-- 배포
+- Infra
   - AWS EC2, PM2, Docker
 
 <br/><br/>

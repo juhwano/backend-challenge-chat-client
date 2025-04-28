@@ -4,7 +4,6 @@
 - [개발 환경](#개발-환경)
 - [빌드 및 실행하기](#빌드-및-실행하기)
 - [기능 요구사항](#기능-요구사항)
-- [폴더 구조](#폴더-구조)
 - [주요 기능](#주요-기능)
 - [화면 구성](#화면-구성)
 
@@ -61,34 +60,6 @@ $ npm start
 - 그룹 채팅의 인원은 최대 100명으로 제한합니다.
 - 사용자가 전달할 수 있는 메시지는 텍스트만 가능합니다.
 - 텍스트 메시지의 길이는 1,000자로 제한합니다.
-
-<br/><br/>
-
-## 폴더 구조
-```bash
-chat-client/
-├── public/                      # 정적 파일
-│   ├── index.html               # 메인 HTML 파일
-│   └── manifest.json            # 웹 앱 매니페스트
-├── src/
-│   ├── components/              # 재사용 가능한 컴포넌트
-│   │   ├── ChatRoom.js          # 채팅방 컴포넌트
-│   │   ├── CreateGroupChatModal.js # 그룹 채팅방 생성 모달
-│   │   └── ProtectedRoute.js    # 인증 라우트 컴포넌트
-│   ├── pages/                   # 페이지 컴포넌트
-│   │   └── Home.js              # 홈 페이지
-│   ├── style/                   # CSS 스타일 파일
-│   │   ├── ChatRoom.css         # 채팅방 스타일
-│   │   ├── CreateGroupChatModal.css # 모달 스타일
-│   │   └── Home.css             # 홈 페이지 스타일
-│   ├── App.js                   # 메인 앱 컴포넌트
-│   ├── App.css                  # 앱 스타일
-│   ├── index.js                 # 진입점
-│   └── index.css                # 전역 스타일
-├── Dockerfile                   # Docker 이미지 빌드 설정
-├── package.json                 # 프로젝트 메타데이터 및 의존성 정보
-└── .env                         # 환경 변수 설정 파일
-```
 
 <br/><br/>
 
